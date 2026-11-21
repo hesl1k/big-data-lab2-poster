@@ -1,0 +1,18 @@
+
+Compiled 1 Solidity file with solc 0.8.30 (evm target: shanghai)
+
+Running Solidity tests
+
+
+Running node:test tests
+
+  Poster
+    ✔ starts without publications
+    ✔ emits author, content and indexed tag; recovers text from calldata
+    ✔ accepts different authors and filters indexed tags
+    ✔ preserves empty strings and special characters
+
+
+4 passing (4 nodejs)
+
+WARNING: hre.network.connect() is deprecated and will be removed in a future version. Use hre.network.create() or hre.network.getOrCreate() instead.
