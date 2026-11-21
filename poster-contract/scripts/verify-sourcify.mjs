@@ -1,0 +1,12 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+const [address,creationTransactionHash]=process.argv.slice(2);
+if(!/^0x[a-fA-F0-9]{40}$/.test(address??''))throw Error('Usage: node scripts/verify-sourcify.mjs ADDRESS [CREATION_TX]');
+const stdJsonInput=JSON.parse(readFileSync(new URL('../../verification/standard-input.json',import.meta.url)));
+const headers={'Content-Type':'application/json','User-Agent':'PosterLab2Verification/1.0'};
+const sourceName=Object.keys(stdJsonInput.sources).find(n=>n.endsWith('/Poster.sol'));
+if(!sourceName)throw Error('Poster.sol missing from compiler input');
+const payload={stdJsonInput,compilerVersion:'0.8.30+commit.73712a01',contractIdentifier:sourceName+':Poster',...(creationTransactionHash?{creationTransactionHash}:{})};
+const response=await fetch(`https://sourcify.dev/server/v2/verify/11155111/${address}`,{method:'POST',headers,body:JSON.stringify(payload)});
+const ticket=await response.json();console.log(JSON.stringify(ticket,null,2));
+if(!response.ok)throw Error(`Verification request failed: ${response.status}`);
+writeFileSync(new URL('../../verification/sourcify-ticket.json',import.meta.url),JSON.stringify(ticket,null,2));

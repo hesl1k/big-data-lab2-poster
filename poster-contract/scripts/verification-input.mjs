@@ -5,5 +5,6 @@ if(!name)throw Error('Compile the contract first');
 const info=JSON.parse(readFileSync(new URL(name,folder)));
 const target=new URL('../../verification/',import.meta.url);mkdirSync(target,{recursive:true});
 writeFileSync(new URL('standard-input.json',target),JSON.stringify(info.input,null,2));
-writeFileSync(new URL('compiler.txt',target),'Compiler: '+info.solcLongVersion+'\nContract: contracts/Poster.sol:Poster\nConstructor arguments: none\n');
+const sourceName=Object.keys(info.input.sources).find(n=>n.endsWith('/Poster.sol'));
+writeFileSync(new URL('compiler.txt',target),'Compiler: '+info.solcLongVersion+'\nContract: '+sourceName+':Poster\nConstructor arguments: none\n');
 console.log('Verification input exported for',info.solcLongVersion);
