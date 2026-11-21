@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "settings": {
+    "evmVersion": "shanghai",
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "ast"
+        ],
+        "*": [
+          "abi",
+          "evm.bytecode.linkReferences",
+          "evm.bytecode.object",
+          "evm.bytecode.opcodes",
+          "evm.bytecode.sourceMap",
+          "evm.deployedBytecode.immutableReferences",
+          "evm.deployedBytecode.linkReferences",
+          "evm.deployedBytecode.object",
+          "evm.deployedBytecode.opcodes",
+          "evm.deployedBytecode.sourceMap",
+          "evm.methodIdentifiers"
+        ]
+      }
+    },
+    "remappings": []
+  },
+  "sources": {
+    "project/contracts/Poster.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.30;\n\n/// @title Guestbook storing publications in event logs\ncontract Poster {\n    event NewPost(address indexed user, string content, string indexed tag);\n\n    function post(string memory content, string memory tag) public {\n        emit NewPost(msg.sender, content, tag);\n    }\n}\n"
+    }
+  }
+}
