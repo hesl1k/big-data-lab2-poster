@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Web3 from "web3";
 import artifact from "../public/Poster.json";
+import { walletRequest } from "../lib/wallet";
 
 type Provider = {request: (args:{method:string;params?:unknown[]})=>Promise<unknown>;on?:(event:string,fn:()=>void)=>void;removeListener?:(event:string,fn:()=>void)=>void};
 declare global {interface Window {ethereum?:Provider}}
@@ -21,8 +22,10 @@ export default function Home(){
  async function run(fn:()=>Promise<void>){setBusy(true);try{await fn();}catch(e){setStatus(e instanceof Error?e.message:String(e));}finally{setBusy(false);}}
  async function wallet(){
   if(!window.ethereum)throw Error("MetaMask не найден. Откройте приложение в Chrome с расширением MetaMask.");
-  const accounts=await window.ethereum.request({method:"eth_requestAccounts"}) as string[];
-  const chain=await window.ethereum.request({method:"eth_chainId"}) as string;
+  setStatus("Ожидание MetaMask: нажмите значок лисы в Chrome и разрешите подключение.");
+  const accounts=await walletRequest<string[]>(window.ethereum,{method:"eth_requestAccounts"});
+  if(!accounts.length)throw Error("MetaMask не предоставил аккаунт. Повторите подключение.");
+  const chain=await walletRequest<string>(window.ethereum,{method:"eth_chainId"},10000);
   if(BigInt(chain)!==BigInt(net.chain))throw Error(`Выберите в MetaMask сеть ${net.label}, затем подключитесь снова.`);
   setAccount(accounts[0]);return {web3:new Web3(window.ethereum as never),from:accounts[0]};
  }
